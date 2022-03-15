@@ -1,8 +1,22 @@
 ## balenaCaddy/caddy/Dockerfile.template ##
 ## Sam Dennon//2022 ##
-FROM caddy:2.4.6-builder-alpine AS builder
+
+## Set the ARGS
+ARG CADDY_VER
+
+FROM caddy:$CADDY_VER-builder-alpine AS builder
+
+## Set the ARGS again because ARG scope
+ARG DNS_PROVIDER
+ARG CADDY_VER
+## Do the Cddy build now ->
 RUN xcaddy build \
-    --with github.com/caddy-dns/${DNS_PROVIDER}
-FROM caddy:2.4.6-alpine
-COPY . .
+    --with github.com/caddy-dns/$DNS_PROVIDER \
+    --with github.com/caddyserver/nginx-adapter
+
+## Switch to the run image
+FROM caddy:$CADDY_VER-alpine
+
+## Copy all that build work over ->
+COPY ./Caddyfile /etc/caddy/Caddyfile
 COPY --from=builder /usr/bin/caddy /usr/bin/caddy

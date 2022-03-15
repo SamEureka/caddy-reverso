@@ -2,14 +2,36 @@
     acme_dns {$DNS_PROVIDER} {$DNS_API_KEY}
 }
 
-*.code.sameureka.com {
-  reverse_proxy 192.168.86.53:8080
+code.sameureka.com {
+  reverse_proxy 192.168.86.53:8080 {
+    header_up Host {host} # redundant
+    header_up X-Real-IP {remote}
+    header_up X-Forwarded-For {remote}  # redundant
+    header_up X-Forwarded-Port {server_port} # redundant
+  }
 }
 
 atlassian.sameureka.com {
-  reverse_proxy /jira/* 192.168.86.68:8100
-  reverse_proxy /wiki/* 192.168.86.68:8090
-  reverse_proxy /bit/* 192.168.86.68:7990
+  reverse_proxy /jira 192.168.86.68:8100 {
+    header_up Host {host} # redundant
+    header_up X-Real-IP {remote}
+    header_up X-Forwarded-For {remote}  # redundant
+    header_up X-Forwarded-Port {server_port} # redundant
+  }
+
+  reverse_proxy /wiki 192.168.86.68:8090 {
+    header_up Host {host} # redundant
+    header_up X-Real-IP {remote}
+    header_up X-Forwarded-For {remote}  # redundant
+    header_up X-Forwarded-Port {server_port} # redundant
+  }
+  
+  reverse_proxy /bit 192.168.86.68:7990 {
+    header_up Host {host} # redundant
+    header_up X-Real-IP {remote}
+    header_up X-Forwarded-For {remote}  # redundant
+    header_up X-Forwarded-Port {server_port} # redundant
+  }
 }
 
 node.sameureka.com {

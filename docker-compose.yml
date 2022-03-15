@@ -2,23 +2,22 @@ version: "2.1"
 
 services:
   caddy:
-    build: ./caddy
+    build:
+      context: ./caddy
+      args:
+      - DNS_PROVIDER=digitalocean
+      - CADDY_VER=2.4.6
     restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - $PWD/Caddyfile:/etc/caddy/Caddyfile
-      - $PWD/site:/srv
       - caddy_data:/data
       - caddy_config:/config
     network_mode: host
     privileged: true
     labels:
       io.balena.features.dbus: 1
-    environment:
-      DNS_PROVIDER: digitalocean
-
 volumes:
   caddy_data:
   caddy_config:
