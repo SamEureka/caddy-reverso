@@ -1,0 +1,8 @@
+## balenaCaddy/caddy/Dockerfile.template ##
+## Sam Dennon//2022 ##
+FROM caddy:2.4.6-builder-alpine AS builder
+RUN xcaddy build \
+    --with github.com/caddy-dns/${DNS_PROVIDER}
+FROM caddy:2.4.6-alpine
+COPY . .
+COPY --from=builder /usr/bin/caddy /usr/bin/caddy

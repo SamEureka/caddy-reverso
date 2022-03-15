@@ -1,0 +1,17 @@
+{
+    acme_dns {$DNS_PROVIDER} {$DNS_API_KEY}
+}
+
+*.code.sameureka.com {
+  reverse_proxy 192.168.86.53:8080
+}
+
+atlassian.sameureka.com {
+  reverse_proxy /jira/* 192.168.86.68:8100
+  reverse_proxy /wiki/* 192.168.86.68:8090
+  reverse_proxy /bit/* 192.168.86.68:7990
+}
+
+node.sameureka.com {
+  reverse_proxy 192.168.86.68:1880
+}
