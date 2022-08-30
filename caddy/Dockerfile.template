@@ -16,8 +16,10 @@ RUN xcaddy build \
 ## Switch to the run image
 FROM caddy:$CADDY_VER-alpine
 
-## Copy all that build work over ->
-COPY ./Caddyfile /etc/caddy/Caddyfile
-COPY --from=builder /usr/bin/caddy /usr/bin/caddy
+## Install Python3
+RUN apk add python3
 
-CMD [ "/usr/bin/caddy", "--config /etc/caddy/Caddyfile" ]
+## Copy all that build work over ->
+COPY ./caddy-config.py /caddy-config.py
+COPY --from=builder /usr/bin/caddy /usr/bin/caddy
+CMD ["python3", "/caddy-config.py"]
