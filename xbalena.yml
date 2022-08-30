@@ -1,0 +1,26 @@
+name: balenaCaddyReverser
+joinable: false
+type: sw.application
+description: >-
+  balenaCaddyReverser is a Caddy based reverse-proxy implementation served from your Raspberry Pi!
+post-provisioning: >-
+  ### Using balenaCaddyReverser
+
+    - See instructions at [balenaCaddyReverser](https://github.com/SamEureka/balenaCaddyReverser)
+assets:
+  repository: 
+    type: blob.asset
+    data:
+      url: 'https://github.com/SamEureka/balenaCaddyReverser'
+  logo:
+    type: blob.asset
+    data:
+      url: >-
+        https://raw.githubusercontent.com/SamEureka/balenaCaddyReverser/main/caddy-dumb.png
+data:
+  defaultDeviceType: raspberrypi3-64
+  supportedDeviceTypes:
+    - raspberrypi3
+    - raspberrypi3-64
+    - raspberrypi4-64
+version: 2.5.3
