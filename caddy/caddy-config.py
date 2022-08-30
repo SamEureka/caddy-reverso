@@ -1,5 +1,6 @@
 import os
 import re
+import time
 import textwrap
 
 defunk = textwrap.dedent
@@ -69,9 +70,12 @@ def write_caddyfile():
     }}
     """
     defunked = defunk(temp_string)
-    print(defunked)
     cf.write(defunked)
 
 write_caddyfile()
 os.system('caddy fmt --overwrite /etc/caddy/Caddyfile')
-os.system('caddy reload --config /etc/caddy/Caddyfile')
+os.system('cat /etc/caddy/Caddyfile')
+os.system('caddy stop')
+os.system('caddy start --config /etc/caddy/Caddyfile')
+while True:
+    time.sleep(60000)
