@@ -1,0 +1,10 @@
+## Placeholder Caddyfile
+## Sam Dennon // 2022
+
+localhost {
+	respond "Hello, world!"
+}
+
+localhost:2016 {
+	respond "Hello, world! This is port 2016!!"
+}
