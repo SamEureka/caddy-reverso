@@ -1,25 +1,29 @@
 ## balenaCaddy/caddy/Dockerfile.template ##
 ## Sam Dennon//2022 ##
 
-## Set the ARGS
-ARG CADDY_VER
-
-FROM caddy:$CADDY_VER-builder-alpine AS builder
+FROM balenalib/%%BALENA_ARCH%%-alpine-golang:1.18-3.16-build AS build
 
 ## Set the ARGS again because ARG scope
 ARG DNS_PROVIDER
-ARG CADDY_VER
+ARG CADDY_VERSION
+
+## Clone and build Caddy
+WORKDIR /caddy
+RUN go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
+
 ## Do the Cddy build now ->
-RUN xcaddy build \
+RUN xcaddy build $CADDY_VERSION \
     --with github.com/caddy-dns/$DNS_PROVIDER
 
 ## Switch to the run image
-FROM caddy:$CADDY_VER-alpine
+FROM balenalib/%%BALENA_ARCH%%-alpine-golang:1.18-3.16-run
 
-## Install Python3
-RUN apk add python3
+## Install required packages 
+RUN install_packages python3
 
-## Copy all that build work over ->
+## Copy all that build work and the config script over ->
 COPY ./caddy-config.py /caddy-config.py
-COPY --from=builder /usr/bin/caddy /usr/bin/caddy
+COPY ./Caddyfile /etc/caddy/Caddyfile
+COPY --from=build /caddy/caddy /usr/bin/caddy
 CMD ["python3", "/caddy-config.py"]
+# CMD ['balena-idle']
