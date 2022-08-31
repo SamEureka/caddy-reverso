@@ -62,7 +62,7 @@ def write_caddyfile():
     temp_string = f"""
     # Caddy configuration file
     # This file is auto-generated on startup, changes to the file will not persist.
-    # See https://github.com/SamEureka/balenaCaddy for configuration options.
+    # See https://github.com/SamEureka/balenaCaddyReverser for configuration options.
 
     {generate_site_block()} {{
     {generate_tls_options()}
