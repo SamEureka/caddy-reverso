@@ -22,8 +22,7 @@ FROM balenalib/%%BALENA_ARCH%%-alpine-golang:1.18-3.16-run
 RUN install_packages python3
 
 ## Copy all that build work and the config script over ->
-COPY ./caddy-config.py /caddy-config.py
+COPY ./caddy-config.py /config/caddy-config.py
 COPY ./Caddyfile /etc/caddy/Caddyfile
 COPY --from=build /caddy/caddy /usr/bin/caddy
-CMD ["python3", "/caddy-config.py"]
-# CMD ['balena-idle']
+CMD ["python3", "/config/caddy-config.py"]
