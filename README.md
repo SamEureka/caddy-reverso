@@ -3,7 +3,7 @@
 __caddy-reverso__ is a Caddy based reverse-proxy server running on your Raspberry Pi! It implements ACME DNS Challenge to obtain tls certificates from Let's Encrypt and is configured via balena device variables in the cloud dashboard. Tested on all Raspberry Pi from v1 to Pi-4-64!
 
 ## Status
-* ~~Works!!!~~ I broke some stuff... working on it.
+* Works!!! ~~I broke some stuff... working on it.~~
 * Needs to be documented properly
 * Uses device variables to config the Caddyfile
 * Wildcard certificates are working!!
@@ -14,7 +14,7 @@ __caddy-reverso__ is a Caddy based reverse-proxy server running on your Raspberr
 1. Document
 2. Figure out how to publish as an app on [Balena Hub](https://hub.balena.io)
 3. Test other DNS providers for the ACME provisioning
-4. OAUTH authentication integration
+4. OAUTH authentication integration ([module](https://github.com/greenpau/caddy-security))
 5. Basic authentication integration (should be easy :laughing:)
 
 ## Device Variables
