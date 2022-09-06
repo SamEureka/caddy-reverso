@@ -2,6 +2,7 @@
 ## Sam Dennon // 2022
 
 import os
+import subprocess
 import re
 import time
 import textwrap
@@ -132,7 +133,11 @@ os.system('cat /etc/caddy/Caddyfile')
 ## Start the caddy server passing in our new config file.
 ## If there aren't any HOSTs... don't start Caddy
 if (create_env_list() != []):
-    os.system('caddy start --config /etc/caddy/Caddyfile')
+    subprocess.run(['caddy', 'run', '--config', '/etc/caddy/Caddyfile', '--adapter caddyfile'], capture_output=True)
+
+
+## ^^^^ trying `caddy run` instead of `caddy start` 
+
 ## Idle... I couldn't find a better way to keep the service running.
 ## Please put in an issue if you know a better way to do this... or better yet, a PR!
-os.system('balena-idle')
+#os.system('balena-idle')
