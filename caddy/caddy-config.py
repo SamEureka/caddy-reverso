@@ -71,7 +71,7 @@ def generate_tls_options():
         tls_temp = f"""
       tls {DNS_EMAIL} {{
         dns {DNS_PROVIDER} {DNS_API_KEY}
-        resolvers {DNS_SEOLVERS}
+        resolvers {DNS_RESOLVERS}
       }}
     """
         return tls_temp
