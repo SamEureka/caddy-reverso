@@ -11,6 +11,7 @@ import textwrap
 defunk = textwrap.dedent
 
 ## Grab some of the device variables
+DNS_RESOLVERS = os.environ['DNS_RESOLVERS'] if 'DNS_RESOLVERS' in os.environ else '1.1.1.1'
 DNS_EMAIL = os.environ['DNS_EMAIL'] if 'DNS_EMAIL' in os.environ else ''
 DNS_PROVIDER = os.environ[
     'DNS_PROVIDER'] if 'DNS_PROVIDER' in os.environ else 'XXX'
@@ -70,6 +71,7 @@ def generate_tls_options():
         tls_temp = f"""
       tls {DNS_EMAIL} {{
         dns {DNS_PROVIDER} {DNS_API_KEY}
+        resolvers {DNS_SEOLVERS}
       }}
     """
         return tls_temp
