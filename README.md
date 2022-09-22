@@ -14,8 +14,9 @@ __caddy-reverso__ is a Caddy based reverse-proxy server running on your Raspberr
 1. Document
 2. Figure out how to publish as an app on [Balena Hub](https://hub.balena.io)
 3. Test other DNS providers for the ACME provisioning
-4. OAUTH authentication integration ([module](https://github.com/greenpau/caddy-security))
-5. Basic authentication integration (should be easy :laughing:)
+~~4. OAUTH authentication integration ([module](https://github.com/greenpau/caddy-security))~~
+~~5. Basic authentication integration (should be easy :laughing:)~~
+4. Look into adding in oauth2-proxy to handle auth stuff instead of caddy modules. basicauth didn't work as expected and caddy-security is a config nightmare
 
 ## Device Variables
 |Name|Value|Notes|
