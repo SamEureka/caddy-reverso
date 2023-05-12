@@ -25,37 +25,35 @@ DNS_API_KEY = os.environ[
 def create_env_list():
     output = []
     for key, val in os.environ.items():
-        if re.match("HOST_[0-9]", key):  ## Device variable name REGEX.
-            host = val.split('|')  ## Splits the values on the pipe separator.
-            try:
-                output.append({
-                    'host': host[0],
-                    'domain': host[1],
-                    'ip': host[2],
-                    'port': host[3],
-                    'wildcard': host[4]
-                })
-            except:
-                print('''
+        if re.match("HOST_[0-9]", key):
+            host = val.split('|')
+            if len(host) == 5:
+                try:
+                    output.append({
+                        'host': host[0],
+                        'domain': host[1],
+                        'ip': host[2],
+                        'port': host[3],
+                        'wildcard': host[4]
+                    })
+                except IndexError:
+                    print('''
         FORMAT ERROR: Check HOST variable format.
         EXPECTING: <host>|<domain>|<ip>|<port>|<wildcard (true or false)>
         ''')
-    if (output != []):
-        return output
-    else:
-        return []
+    return output
 
-
-## Creates the site block of the Caddyfile
 def generate_site_block():
-    list = create_env_list()
-    if (list == []):
-        return '!! No hosts found !! '
+    env_list = create_env_list()
+    if not env_list:
+        return '!! No hosts found !!'
+    
     temp_list = []
-    for e in list:
-        if (e['wildcard'] == 'true'):
-            temp_list.append(f"*.{e['host']}.{e['domain']} ")
-        temp_list.append(f"{e['host']}.{e['domain']} ")
+    for env in env_list:
+        if env['wildcard'] == 'true':
+            temp_list.append(f"*.{env['host']}.{env['domain']} ")
+        temp_list.append(f"{env['host']}.{env['domain']} ")
+    
     return ''.join(temp_list)
 
 
