@@ -1,30 +1,32 @@
-name: balenaCaddyReverser
+name: caddy-reverso
 joinable: false
 type: sw.application
 description: >-
-  balenaCaddyReverser is a Caddy based reverse-proxy server running on your Raspberry Pi! It implements ACME DNS Challenge to obtain tls certificates from Let's Encrypt and is configured via balena device variables in the cloud dashboard. Tested on all Raspberry Pi from v1 to Pi-4-64!  
+  caddy-reverso is a Caddy based reverse-proxy server running on your Raspberry Pi! It implements ACME DNS Challenge to obtain tls certificates from Let's Encrypt & basic authentication. Everything is configured via balena device variables in the balena.io cloud dashboard. Tested on all Raspberry Pi from v1 to Pi-4-64!
 post-provisioning: >-
-  ### Using balenaCaddyReverser
+  ### Using caddy-reverso
 
-    - Minimum device variables: DNS_PROVIDER, DNS_API_KEY, and a HOST_<number>
+    - Minimum device variables: DNS_PROVIDER, DNS_API_KEY, and a HOST_<number> 
 
-    - See instructions at [balenaCaddyReverser](https://github.com/SamEureka/balenaCaddyReverser)
+    - See terrible instructions at [caddy-reverso](https://github.com/SamEureka/caddy-reverso)
 assets:
   repository: 
     type: blob.asset
     data:
-      url: 'https://github.com/SamEureka/balenaCaddyReverser'
+      url: 'https://github.com/SamEureka/caddy-reverso'
   logo:
     type: blob.asset
     data:
       url: >-
-        https://raw.githubusercontent.com/SamEureka/balenaCaddyReverser/main/caddy-dumb.png
+        https://raw.githubusercontent.com/SamEureka/caddy-reverso/main/caddy-dumb.png
 data:
   defaultDeviceType: raspberrypi3-64
   supportedDeviceTypes:
-    - rpi
+    - raspberry-pi
     - raspberry-pi2
     - raspberrypi3
+    - raspberrypi0-2w-64
     - raspberrypi3-64
+    - raspberrypi400-64
     - raspberrypi4-64
-version: 2.5.2
+version: 3.0.15

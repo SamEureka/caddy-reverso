@@ -1,10 +1,10 @@
 ## Caddy Configurator
 ## Sam Dennon // 2022
+## Updated // July 2024
 
 import os
 import subprocess
 import re
-import time
 import textwrap
 
 ## Removes all the crazy indenting caused by the multi-line strings.
@@ -13,33 +13,40 @@ defunk = textwrap.dedent
 ## Grab some of the device variables
 DNS_RESOLVERS = os.environ['DNS_RESOLVERS'] if 'DNS_RESOLVERS' in os.environ else '1.1.1.1'
 DNS_EMAIL = os.environ['DNS_EMAIL'] if 'DNS_EMAIL' in os.environ else ''
-DNS_PROVIDER = os.environ[
-    'DNS_PROVIDER'] if 'DNS_PROVIDER' in os.environ else 'XXX'
-DNS_API_KEY = os.environ[
-    'DNS_API_KEY'] if 'DNS_API_KEY' in os.environ else 'XXX'
+DNS_PROVIDER = os.environ['DNS_PROVIDER'] if 'DNS_PROVIDER' in os.environ else 'XXX'
+DNS_API_KEY = os.environ['DNS_API_KEY'] if 'DNS_API_KEY' in os.environ else 'XXX'
+BASIC_AUTH_USER = os.environ['BASIC_AUTH_USER'] if 'BASIC_AUTH_USER' in os.environ else 'admin'
+BASIC_AUTH_PASSWORD = os.environ['BASIC_AUTH_PASSWORD'] if 'BASIC_AUTH_PASSWORD' in os.environ else 'password'
 
+## Generate hashed password using Caddy's built-in utility
+def generate_hashed_password(password):
+    result = subprocess.run(['caddy', 'hash-password', '--plaintext', password], capture_output=True, text=True)
+    return result.stdout.strip()
+
+hashed_password = generate_hashed_password(BASIC_AUTH_PASSWORD)
 
 ## Pulls all the HOSTs out of the device variables and puts them in a list of dicts.
-## Format for device variable - Name: HOST_<number>, Value: <host>|<domain>|<ip>|<port>|<wildcard (true or false)>
-## The name must start with 'HOST_' and have a number. The value must separated with the pipe symbol '|'
+## Format for device variable - Name: HOST_<number>, Value: <host>|<domain>|<ip>|<port>|<wildcard (true or false)>|<auth_req (true or false)>
+## The name must start with 'HOST_' and have a number. The value must be separated with the pipe symbol '|'
 def create_env_list():
     output = []
     for key, val in os.environ.items():
         if re.match("HOST_[0-9]", key):
             host = val.split('|')
-            if len(host) == 5:
+            if len(host) == 6:  # Expecting an additional auth_req flag
                 try:
                     output.append({
                         'host': host[0],
                         'domain': host[1],
                         'ip': host[2],
                         'port': host[3],
-                        'wildcard': host[4]
+                        'wildcard': host[4],
+                        'auth_req': host[5]  # Add auth_req flag
                     })
                 except IndexError:
                     print('''
         FORMAT ERROR: Check HOST variable format.
-        EXPECTING: <host>|<domain>|<ip>|<port>|<wildcard (true or false)>
+        EXPECTING: <host>|<domain>|<ip>|<port>|<wildcard (true or false)>|<auth_req (true or false)>
         ''')
     return output
 
@@ -83,23 +90,31 @@ def generate_matcher_options():
     !! Create HOST_<number> device variable in balena.io console       !!
     !! Format for device variable -                                    !!
     !!  Name: HOST_<number>                                            !!
-    !!  Value: <host>|<domain>|<ip>|<port>|<wildcard (true or false)>  !!
+    !!  Value: <host>|<domain>|<ip>|<port>|<wildcard (true or false)>|<auth_req (true or false)>  !!
     !! The name must start with 'HOST_' and have a number.             !!
-    !! The value must separated with the pipe symbol '|'               !!
+    !! The value must be separated with the pipe symbol '|'            !!
     """
     temp_list = []
     for e in list:
+        basicauth_block = f"""
+            basicauth {{
+                {BASIC_AUTH_USER} {hashed_password}
+            }}
+        """ if e['auth_req'] == 'true' else ''
+
         if (e['wildcard'] == 'true'):
             temp_list.append(f"""
         @{e['host']}wild host *.{e['host']}.{e['domain']}
           handle @{e['host']}wild {{
-          reverse_proxy {e['ip']}:{e['port']}
+            {basicauth_block}
+            reverse_proxy {e['ip']}:{e['port']}
         }}        
       """)
         temp_list.append(f"""
       @{e['host']} host {e['host']}.{e['domain']}
         handle @{e['host']} {{
-        reverse_proxy {e['ip']}:{e['port']}  
+          {basicauth_block}
+          reverse_proxy {e['ip']}:{e['port']}  
       }}
     """)
     return ''.join(temp_list)
@@ -134,6 +149,7 @@ os.system('cat /etc/caddy/Caddyfile')
 ## If there aren't any HOSTs... don't start Caddy
 if (create_env_list() != []):
     os.system('caddy run --config /etc/caddy/Caddyfile --adapter caddyfile')
+
 
 ## Idle... I like balena-idle as a fallback for troubleshooting. You can comment this out if you like.
 os.system('balena-idle')
