@@ -1,5 +1,7 @@
 ## balenaCaddy/caddy/Dockerfile.template ##
 ## Sam Dennon//2022 ##
+## Updated // 2024 ##
+
 
 FROM balenalib/%%BALENA_ARCH%%-alpine-golang:1.18-3.16-build AS build
 
